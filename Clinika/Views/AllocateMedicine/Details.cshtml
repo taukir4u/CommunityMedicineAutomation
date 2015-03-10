@@ -1,0 +1,59 @@
+﻿@model Clinika.Models.DatabaseObject.AllocateMedicine
+
+@{
+    ViewBag.Title = "Send Medicine Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("Disease", "Index", "Disease") ||
+    @Html.ActionLink("Center", "Create", "ServinceCenter") ||
+    @Html.ActionLink("Medicine Send Info", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Send Medicine", "Create", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+<h2>Send Medicine Details</h2>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AMedicine.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AMedicine.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AServiceCenter.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AServiceCenter.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DistrictUpazilaId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DistrictUpazilaId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary", @style = "color:white; background-color: mediumslateblue" })
+    
+</p>

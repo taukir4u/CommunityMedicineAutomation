@@ -1,0 +1,120 @@
+﻿@model Clinika.Models.DatabaseObject.Diseases
+
+@{
+    ViewBag.Title = "Disease Setup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("View Disease", "Index", "Disease") ||
+    @Html.ActionLink("Disease Setup", "Create", "Disease", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    @Html.ActionLink("Center", "Index", "ServinceCenter") ||
+    @Html.ActionLink("Send Medicine", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+<h2>Disease Setup</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TreatmentProcedure, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TreatmentProcedure)
+                @Html.ValidationMessageFor(model => model.TreatmentProcedure)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PreferdMedicien, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PreferdMedicien)
+                @Html.ValidationMessageFor(model => model.PreferdMedicien)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="alert alert-warning alert-dismissible" role="alert" id="warning">
+                    <strong>Warning!</strong>Fill all information.
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="alert alert-warning alert-dismissible" role="alert" id="Message">
+                    <strong>Warning!</strong>Already Exist.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" value="Create" id="Create" class="btn btn-default" style="background-color: darkgreen; color: azure" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#warning").hide();
+            $("#Message").hide();
+            $("#Create").click(function () {
+                $("#warning").hide();
+                $("#Message").hide();
+                var name = $("#Name").val();
+                var description = $("#Description").val();
+                var treatmentProcedure = $("#TreatmentProcedure").val();
+                var preferdMedicien = $("#PreferdMedicien").val();
+                var disease = { Name: name, Description: description, TreatmentProcedure: treatmentProcedure, PreferdMedicien: preferdMedicien };
+                if (name == "" || description == "" || treatmentProcedure == "" || preferdMedicien == "") {
+                    $("#warning").show();
+                } else {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("InsertDiseaseName", "Disease")',
+                        contentType: "application/json;charset=utf-8",
+                        data: JSON.stringify(disease),
+                        dataType: "json",
+                        success: function (data) {
+                            if (data == true) {
+                                $("#Message").show();
+                            } else {
+                                window.location.reload();
+                            }
+                        },
+                    });
+                }
+            });
+        });
+
+    </script>
+}

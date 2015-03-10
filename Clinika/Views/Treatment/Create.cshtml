@@ -1,0 +1,305 @@
+﻿@using Microsoft.Ajax.Utilities
+@model Clinika.Models.Relations.Treatments
+
+@{
+    ViewBag.Title = "Give Treatment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+<p>
+    <hr />
+    || @Html.ActionLink("Doctor", "Index", "DoctorEntry") ||
+    @Html.ActionLink("View Treatment", "Index", "Treatment") ||
+    @Html.ActionLink("Give Treatment", "Create", "Treatment", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    @Html.ActionLink("Medicine Stock", "Index", "MdicineStockReport") ||
+    <hr />
+</p>
+
+<h2>Give Treatment</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VoterId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.VoterId)
+                @Html.ValidationMessageFor(model => model.VoterId)
+               <input type="button" value="Show" id="show" class="btn btn-default" style="background-color: olivedrab; color: azure" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address)
+                @Html.ValidationMessageFor(model => model.Address)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateOfBirht, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateOfBirht)
+                @Html.ValidationMessageFor(model => model.DateOfBirht)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ServiceGiven, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ServiceGiven)
+                @Html.ValidationMessageFor(model => model.ServiceGiven)
+                @Html.ActionLink("Patient History", "Show", "ShowAllPatientHistory") 
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Observation, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Observation)
+                @Html.ValidationMessageFor(model => model.Observation)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date)
+                @Html.ValidationMessageFor(model => model.Date)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class=" control-label col-md-2">Doctor</label>
+            <div class="col-md-10">
+                <select id="doctor">
+                    <option>Doctor Name</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DiseasesId, "Diseases", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DiseasesId", "Disease Name")
+                @Html.ValidationMessageFor(model => model.DiseasesId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MedicineId, "Medicine", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("MedicineId", "Medicine Name")
+                @Html.ValidationMessageFor(model => model.MedicineId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DoseId, "Dose", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DoseId", "Dose Sequence")
+                @Html.ValidationMessageFor(model => model.DoseId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MealId, "Before/After Meal", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("MealId", "Meal Regulation")
+                @Html.ValidationMessageFor(model => model.MealId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.QuantityGiven, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.QuantityGiven)
+                @Html.ValidationMessageFor(model => model.QuantityGiven)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Note)
+                @Html.ValidationMessageFor(model => model.Note)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Add" id="Add" class="btn btn-default" style="background-color: indigo; color: azure" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="alert alert-warning alert-dismissible" role="alert" id="warning">
+                    <strong>Warning!</strong>Fill all information.
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button id="myBsdfsdfdfsutton" type="button" class="btn btn-success">PDF Generate</button>
+            <table class="table table-bordered" id="addMedicine">
+                <thead>
+                    <tr>
+                        <th>Disease</th>
+                        <th>Medicine</th>
+                        <th>Dose</th>
+                        <th>Before/After Meal</th>
+                        <th>Quantity Given</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Save" id="save" class="btn btn-default" style="background-color: darkgreen; color: azure" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Scripts/base64.js"></script>
+    <script src="~/Scripts/jquery.base64.js"></script>
+    <script src="~/Scripts/downloadify.min.js"></script>
+    <script src="~/Scripts/jspdf.js"></script>
+    <script src="~/Scripts/sprintf.js"></script>
+    <script src="~/Scripts/tableExport.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            $("#myBsdfsdfdfsutton").click(function() {
+
+                $('#addMedicine').tableExport({ type: 'pdf', escape: 'false', pdfFontSize: 10, border: 1 });
+            });
+
+        });
+
+
+        $(document).ready(function() {
+            $("#warning").hide();
+            var serviceCenterCode = "5H4lrja4";
+            var patient = new Array();
+
+
+           $("#serviceGiven").click(function () {
+                var voterId = $("#VoterId").val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("showHistory", "Treatment")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ voterId: voterId }),
+                    dataType: "json",
+                    success: function (data) {
+                       },
+                });
+            });
+            $("#show").click(function() {
+
+                var voterId = $("#VoterId").val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetVoterInformation", "Treatment")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ voterId: voterId }),
+                    dataType: "json",
+                    success: function(data) {
+                        $("#Name").val(data.Name);
+                        $("#Address").val(data.Address);
+                        $("#DateOfBirht").val(data.DateOfbirth);
+                        $("#ServiceGiven").val(data.Servicegiven);
+                        var aPatient = { VoterId: voterId, Name: data.Name, Address: data.Address, DateOfbirth: data.DateOfbirth };
+                        patient.push(aPatient);
+                    },
+                });
+            });
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAllDoctor", "Treatment")',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({ serviceCenterCode: serviceCenterCode }),
+                dataType: "json",
+                success: function(data) {
+                    $.each(data, function(index, value) {
+                        $('#doctor').append($('<option/>', {
+                            value: value.DoctorId,
+                            text: value.Name
+                        }));
+                    });
+                },
+            });
+            var medicineGivens = new Array();
+            $("#Add").click(function() {
+
+                var diseasesId = $("#DiseasesId option:selected").val();
+                var medicineId = $("#MedicineId option:selected").val();
+                var doseId = $("#DoseId option:selected").val();
+                var mealId = $("#MealId option:selected").val();
+                var quantityGiven = $("#QuantityGiven").val();
+                var note = $("#Date").val();
+                if ($("#DiseasesId").val() == "" || $("#MedicineId").val() == "" || $("#doseId").val() == "" || $("#mealId").val() == "" || $("#quantityGiven").val() == "" || $("#note").val() == "" || $("#Date").val() == "") {
+                    $("#warning").show();
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ChekMedicineAvailability", "Treatment")',
+                        contentType: "application/json;charset=utf-8",
+                        data: JSON.stringify({ serviceCenterCode: serviceCenterCode, medicineId: medicineId, quantityGiven: quantityGiven }),
+                        dataType: "json",
+                        success: function (data) {
+                            $("#warning").hide();
+                            if (data == true) {
+                                $("#warning").hide();
+                                var medicineGiven = { DiseasesId: diseasesId, MedicineId: medicineId, DoseId: doseId, MealId: mealId, QuantityGiven: quantityGiven, Note: note };
+                                medicineGivens.push(medicineGiven);
+                                $('#addMedicine').append("<tr><td> " + $("#DiseasesId option:selected").text() + "</td><td>" + $("#MedicineId option:selected").text() + "</td><td>" + $("#DoseId option:selected").text() + "</td><td>" + $("#MealId option:selected").text() + "</td><td>" + $("#QuantityGiven").val() + "</td><td>" + $("#Note").val() + "</td></tr>");
+                            } else {
+                                alert("Sorry! sir,our stock is limited now we have only " + data.quantity + " " + data.medicineName + "  Medicine");
+                            }
+                        },
+                    });
+                }
+
+            });
+            var patients = new Array();
+
+            $("#save").click(function() {
+                var day = new Date();
+                day = $("#Date").val();
+                var patientsInfo = patient;
+                var observation = $("#Observation").val();
+                var doctorId = $("#doctor option:selected").val();
+                var treatmentRelation = { Observation: observation, DateOfObservation: day, DoctorId: doctorId, ServiceCenterCode: serviceCenterCode };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("TreatmentAPatientEntry", "Treatment")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ aTreatmentRelation: treatmentRelation, medicinegivens: medicineGivens, patientInformations: patientsInfo }),
+                    dataType: "json",
+                    success: function(data) {
+
+                    },
+                });
+                window.location.reload();
+            });
+        });
+
+    </script>
+}

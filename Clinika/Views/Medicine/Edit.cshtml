@@ -1,0 +1,65 @@
+﻿@model CliniKa.Models.DatabaseObject.Medicine
+
+@{
+    ViewBag.Title = "Edit Medicine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("View Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("Medicine Setup", "Create", "Medicine") ||
+    @Html.ActionLink("Disease", "Index", "Disease") ||
+    @Html.ActionLink("Center", "Index", "ServinceCenter") ||
+    @Html.ActionLink("Send Medicine", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+<h2>Edit Medicine</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Medicine</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.MedicineId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Power, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Power)
+                @Html.ValidationMessageFor(model => model.Power)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PowerUnit, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PowerUnit)
+                @Html.ValidationMessageFor(model => model.PowerUnit)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" style="background-color: darkgreen; color: azure" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

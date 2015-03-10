@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Show Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Show Patient</h2>
+
+<div class="form-horizontal">
+    <div class="form-inline">
+
+        <table class="table table-bordered" id="report">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Center Name</th>
+                    <th>Center Code</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetHistory", "Treatment")',
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (datas) {
+                    $('#report tbody tr').remove();
+                    var i = 0;
+                    $.each(datas, function (index, value) {
+                        i++;
+                        $('#report tbody').append("<tr><td> " + "History ::" + i + "</td><td>" + value.ServiceCenterName + "</td><td>" + value.ServcieCenterCode + "</td></tr>");
+                    });
+
+                },
+            });
+
+        });
+    </script>
+}

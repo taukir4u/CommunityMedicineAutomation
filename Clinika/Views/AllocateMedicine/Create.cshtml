@@ -1,0 +1,191 @@
+﻿@using Newtonsoft.Json
+@model Clinika.Models.DatabaseObject.AllocateMedicine
+
+@{
+    ViewBag.Title = "Send Medicine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("Disease", "Index", "Disease") ||
+    @Html.ActionLink("Center", "Create", "ServinceCenter") ||
+    @Html.ActionLink("Medicine Send Info", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Send Medicine", "Create", "AllocateMedicine", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+<h2>Send Medicine</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label class=" control-label col-md-2">District</label>
+            <div class="col-md-10">
+                @Html.DropDownList("Districts", "Select District")
+                @Html.ValidationMessageFor(model => model.Districts)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class=" control-label col-md-2">Upazila</label>
+            <div class="col-md-10">
+                <select id="Upazilas">
+                    <option></option>
+                    <option></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class=" control-label col-md-2">Center Name</label>
+            <div class="col-md-10">
+                <div class="col-md-10">
+                    <select id="ServiceCenterId">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class=" control-label col-md-2">Medicine Name</label>
+            <div class="col-md-10">
+                @Html.DropDownList("MedicineId", "Select Medicine")
+                @Html.ValidationMessageFor(model => model.MedicineId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Quantity, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Quantity)
+                @Html.ValidationMessageFor(model => model.Quantity)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Add" id="Add" class="btn btn-default" style="background-color: indigo; color: azure" />
+            </div>
+        </div>
+        <div>
+            <table class="table table-bordered table-hover" id="addMedicine">
+                <thead>
+                    <tr>
+                        <td>Medicien Name</td>
+                        <td>Medicine Quantity</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="alert alert-warning alert-dismissible" role="alert" id="warning">
+                    <strong>Warning!</strong>Fill all information.
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Save" id="save" class="btn btn-default" style="background-color: darkgreen; color: azure" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $("#warning").hide();
+            $('#Districts').change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var mydata = { districtId: optionSelected.val() };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("FindThisDistrict", "AllocateMedicine")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify(mydata),
+                    dataType: "json",
+                    success: function (data) {
+                        $('#Upazilas').empty().append('<option  value="">Select Upazila</option>');
+                        $.each(data, function (index, value) {
+                            $('#Upazilas').append($('<option/>', {
+                                value: value.Id,
+                                text: value.Name
+                            }));
+                        });
+                    },
+                });
+            });
+
+
+            $("#Upazilas").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var mydata = { upazilaId: optionSelected.val() };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("FindServiceCenter", "AllocateMedicine")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify(mydata),
+                    dataType: "json",
+                    success: function (data) {
+                        $('#ServiceCenterId').empty().append('<option  value="">Select Center</option>');
+                        $.each(data, function (index, value) {
+                            $('#ServiceCenterId').append($('<option/>', {
+                                value: value.ServiceCenterId,
+                                text: value.Name
+                            }));
+                        });
+                    },
+                });
+            });
+
+
+            $("#save").click(function () {
+                var mydata = names;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Chk", "AllocateMedicine")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify(mydata),
+                    dataType: "json",
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                });
+
+            });
+
+            var names = new Array();
+
+            $("#Add").click(function () {
+
+
+                var upazilaId = $("#Upazilas").val();
+                var districtId = $("#Districts").val();
+                var serviceCenterId = $("#ServiceCenterId").val();
+                var medicineId = $("#MedicineId").val();
+                var quantity = $("#Quantity").val();
+                var medicineName = $("#MedicineId option:selected").text();
+                if (upazilaId == "" || districtId == "" || serviceCenterId == "" || quantity == "" || medicineName == "") {
+                    $("#warning").show();
+                } else {
+                    $('#addMedicine').append("<tr><td> " + medicineName + "</td><td>" + quantity + "</td></tr>");
+
+                    var name = { Quantity: quantity, UpazilaId: upazilaId, ServiceCenterId: serviceCenterId, MedicineId: medicineId, DistrictId: districtId };
+                    names.push(name);
+                }
+               
+            });
+        });
+    </script>
+}

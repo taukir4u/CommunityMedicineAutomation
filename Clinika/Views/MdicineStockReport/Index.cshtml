@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Medicine Stock";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p>
+    <hr />
+    || @Html.ActionLink("Doctor", "Index", "DoctorEntry") ||
+    @Html.ActionLink("Treatment", "Index", "Treatment") ||
+    @Html.ActionLink("Medicine Stock", "Index", "MdicineStockReport", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    <hr />
+</p>
+
+<h2>Medicine Stock</h2>
+<button id="myBsdfsdfdfsutton" type="button" class="btn btn-success">PDF Generate</button>
+<table class="table table-bordered" id="addMedicine">
+    <thead>
+        <tr>
+            <th>Medicine Name</th>
+            <th>Medicine Quantity</th>
+        </tr>
+    </thead>
+</table>
+    @section scripts{
+        <script src="~/Scripts/base64.js"></script>
+
+        <script src="~/Scripts/jquery.base64.js"></script>
+
+        <script src="~/Scripts/downloadify.min.js"></script>
+
+        <script src="~/Scripts/jspdf.js"></script>
+
+        <script src="~/Scripts/sprintf.js"></script>
+
+        <script src="~/Scripts/tableExport.js"></script>
+
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                $("#myBsdfsdfdfsutton").click(function () {
+
+                    $('#addMedicine').tableExport({ type: 'pdf', escape: 'false', pdfFontSize: 10, border: 1 });
+                });
+
+            });
+
+            $(document).ready(function () {
+                var serviceCenterCode = "1rfu7315";
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetMedicineStockReport", "MdicineStockReport")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ serviceCenterCode: serviceCenterCode }),
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function (index, value) {
+                            $('#addMedicine').append("<tr><td> " + value.MedicineName + "</td><td>" + value.MedicineQuantity + "</td></tr>");
+                        });
+                    },
+                });
+            });
+        </script>
+    }

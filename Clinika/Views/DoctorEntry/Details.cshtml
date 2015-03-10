@@ -1,0 +1,50 @@
+﻿@model Clinika.Models.DatabaseObject.DoctorEntry
+
+@{
+    ViewBag.Title = "Doctor Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("View Doctor", "Index", "DoctorEntry") ||
+    @Html.ActionLink("Add Doctor", "Create", "DoctorEntry") ||
+    @Html.ActionLink("Treatment", "Index", "Treatment") ||
+    @Html.ActionLink("Medicine Stock", "Index", "MdicineStockReport") ||
+    <hr />
+</p>
+<h2>Doctor Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Degree)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Degree)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Specialization)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Specialization)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DoctorId }, new { @class = "btn btn-primary", @style = "color:white; background-color: mediumslateblue" })
+    
+</p>

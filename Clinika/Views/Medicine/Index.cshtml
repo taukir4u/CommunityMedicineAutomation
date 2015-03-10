@@ -1,0 +1,55 @@
+﻿@model IEnumerable<CliniKa.Models.DatabaseObject.Medicine>
+
+@{
+    ViewBag.Title = "View Medicine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("View Medicine", "Index", "Medicine", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    @Html.ActionLink("Medicine Setup", "Create", "Medicine") ||
+    @Html.ActionLink("Disease", "Index", "Disease") ||
+    @Html.ActionLink("Center", "Index", "ServinceCenter") ||
+    @Html.ActionLink("Send Medicine", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+
+<h2>View Medicine</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            Medicine Name@*@Html.DisplayNameFor(model => model.Name)*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Power)
+        </th>
+        <th>
+            Mg/Ml@*@Html.DisplayNameFor(model => model.PowerUnit)*@
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Power)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PowerUnit)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.MedicineId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.MedicineId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MedicineId })
+            </td>
+        </tr>
+    }
+
+</table>

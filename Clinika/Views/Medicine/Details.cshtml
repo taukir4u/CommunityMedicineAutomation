@@ -1,0 +1,52 @@
+﻿@model CliniKa.Models.DatabaseObject.Medicine
+
+@{
+    ViewBag.Title = "Medicine Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("View Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("Medicine Setup", "Create", "Medicine") ||
+    @Html.ActionLink("Disease", "Index", "Disease") ||
+    @Html.ActionLink("Center", "Index", "ServinceCenter") ||
+    @Html.ActionLink("Send Medicine", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+<h2>Medicine Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Power)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Power)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PowerUnit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PowerUnit)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.MedicineId }, new { @class = "btn btn-primary", @style = "color:white; background-color: mediumslateblue" })
+    
+</p>

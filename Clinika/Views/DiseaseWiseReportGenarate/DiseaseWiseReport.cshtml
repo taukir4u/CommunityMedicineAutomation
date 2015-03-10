@@ -1,0 +1,235 @@
+﻿@{
+    ViewBag.Title = "Disease Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("View Disease", "Index", "Disease") ||
+    @Html.ActionLink("Disease Setup", "Create", "Disease") ||
+    @Html.ActionLink("Center", "Index", "ServinceCenter") ||
+    @Html.ActionLink("Send Medicine", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    <hr />
+</p>
+<h2>Disease Report</h2>
+<hr />
+<div class="form-horizontal">
+    <div class="form-group">
+        <div>
+            <label for="disease">Select Disease</label>
+            <select id="disease">
+                <option>Select Disease</option>
+            </select>
+            <input type="button" id="showAllDistrictResult" value="Show All" style="background-color: olivedrab; color: azure" />
+        </div>
+        <div class="form-inline">
+            <label for="fromDate">Date Between</label>
+            <input type="datetime" id="fromDate" />
+            <label for="todate">To</label>
+            <input type="datetime" id="todate" />
+            <input type="submit" id="show" value="Show by date" style="background-color: olivedrab; color: azure" />
+        </div>
+       <div>
+            <div>
+                <button id="pdf" type="button" class="btn btn-success">PDF Generate</button>
+            </div>
+            <table class="table table-bordered table-hover" id="report">
+                <thead>
+                    <tr>
+                        <th class="form-group">District Name<select id="districtName"><option>Sort By(Original sequence)</option><option> Ascending</option><option>Dscending</option></select></th>
+                        <th>Total Patient<select id="totalPatient"><option>Sort By(Original sequence)</option><option> More patient</option><option>Lower Patient</option></select></th>
+                        <th>(%) Over Population<select id="population"><option>Sort By(Original sequence)</option><option> More affected</option><option>Lower affected</option></select></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script src="~/Scripts/base64.js"></script>
+    <script src="~/Scripts/jquery.base64.js"></script>
+
+    <script src="~/Scripts/downloadify.min.js"></script>
+    <script src="~/Scripts/jspdf.js"></script>
+    <script src="~/Scripts/sprintf.js"></script>
+    <script src="~/Scripts/tableExport.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#pdf").click(function () {
+
+                $('#report').tableExport({ type: 'pdf', escape: 'true', pdfFontSize: 10, border: 2 });
+            });
+
+
+        });
+
+
+
+
+        $(function () {
+            $("#fromDate, #todate").datepicker();
+        });
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("AllDisease", "DiseaseWiseReportGenarate")',
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $('#disease').append($('<option/>', {
+                            value: value.DiseasesId,
+                            text: value.Name
+                        }));
+                    });
+                },
+            });
+            var originalReport = new Array();
+            var sortngReport = new Array();
+            $("#show").click(function () {
+
+                var fromDate = new Date();
+                var toDate = new Date();
+                fromDate = $("#fromDate").val();
+                toDate = $("#todate").val();
+                var diseasesId = $("#disease option:selected").val();
+                $.ajax({
+                    type: "POst",
+                    url: '@Url.Action("GetDiseaseStatistic", "DiseaseWiseReportGenarate")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ fromDate: fromDate, toDate: toDate, diseaseId: diseasesId }),
+                    dataType: "json",
+                    success: function (data) {
+                        $('#report tbody tr').remove();
+                        $.each(data, function (index, value) {
+                            var result = { DistrictName: value.DistrictName, TotalPatient: value.TotalPatient, PercentOverPopulation: value.PercentOverPopulation };
+                            originalReport.push(result);
+                            $('#report').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                        });
+                    },
+                });
+            });
+            $("#showAllDistrictResult").click(function () {
+                var diseasesId = $("#disease option:selected").val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("StatisticResult", "DiseaseWiseReportGenarate")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ diseasesId: diseasesId }),
+                    dataType: "json",
+                    success: function (data) {
+                        $('#report tbody tr').remove();
+                        $.each(data, function (index, value) {
+                            var result = { DistrictName: value.DistrictName, TotalPatient: value.TotalPatient, PercentOverPopulation: value.PercentOverPopulation };
+                            originalReport.push(result);
+                            $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                        });
+                    },
+                });
+            });
+            $("#districtName").change(function () {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("sortAscending", "DiseaseWiseReportGenarate")',
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify({ originalReport: originalReport }),
+                    success: function (data) {
+                        $('#report tbody tr').remove();
+                        if ($("#districtName").val() == "Ascending") {
+                            $('#report tbody tr').remove();
+                            $.each(data, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        } else if ($("#districtName").val() == "Dscending") {
+                            $('#report tbody tr').remove();
+                            sortngReport = data.reverse();
+                            $.each(sortngReport, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        }
+                        else {
+                            $('#report tbody tr').remove();
+                            $.each(originalReport, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        }
+
+
+                    },
+                });
+            });
+            $("#totalPatient").change(function () {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("sortBypatients", "DiseaseWiseReportGenarate")',
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify({ originalReport: originalReport }),
+                    success: function (data) {
+                        $('#report tbody tr').remove();
+                        if ($("#totalPatient").val() == "Lower patient") {
+                            $('#report tbody tr').remove();
+                            $.each(data, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        } else if (($("#totalPatient").val() == "More patient")) {
+                            $('#report tbody tr').remove();
+                            sortngReport = data.reverse();
+                            $.each(sortngReport, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        } else {
+                            $('#report tbody tr').remove();
+                            $.each(originalReport, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        }
+                    },
+                });
+            });
+            $("#population").change(function () {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("sortByparcents", "DiseaseWiseReportGenarate")',
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify({ originalReport: originalReport }),
+                    success: function (data) {
+                        $('#report tbody tr').remove();
+                        if ($("#population").val() == "Lower affected") {
+                            $('#report tbody tr').remove();
+                            $.each(data, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        } else if ($("#population").val() == "More affected") {
+                            $('#report tbody tr').remove();
+                            sortngReport = data.reverse();
+                            $.each(sortngReport, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        }
+                        else {
+                            $('#report tbody tr').remove();
+                            $.each(originalReport, function (index, value) {
+                                $('#report tbody').append("<tr><td> " + value.DistrictName + "</td><td>" + value.TotalPatient + "</td><td>" + value.PercentOverPopulation + "</td></tr>");
+                            });
+                        }
+                    },
+                });
+            });
+        });
+
+    </script>
+}

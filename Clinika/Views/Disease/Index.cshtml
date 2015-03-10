@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Clinika.Models.DatabaseObject.Diseases>
+
+@{
+    ViewBag.Title = "View Disease";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <hr />
+    || @Html.ActionLink("Medicine", "Index", "Medicine") ||
+    @Html.ActionLink("View Disease", "Index", "Disease", new { @class = "btn btn-primary", @style = "color:white" }) ||
+    @Html.ActionLink("Disease Setup", "Create", "Disease") ||
+    @Html.ActionLink("Center", "Index", "ServinceCenter") ||
+    @Html.ActionLink("Send Medicine", "Index", "AllocateMedicine") ||
+    @Html.ActionLink("Disease Report", "DiseaseWiseReport", "DiseaseWiseReportGenarate") ||
+    <hr />
+</p>
+<h2>View Disease</h2>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TreatmentProcedure)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PreferdMedicien)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TreatmentProcedure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PreferdMedicien)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.DiseasesId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.DiseasesId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.DiseasesId })
+            </td>
+        </tr>
+    }
+
+</table>

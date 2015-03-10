@@ -1,0 +1,77 @@
+﻿@using System.Activities.Statements
+@{
+    ViewBag.Title = "Chart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Chart</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="form-group row">
+                <label for="dateForm">Form</label>
+                <input type="datetime" class="datepicker" />
+                <label for="dateTo">To</label>
+                <input type="datetime" class="datepicker" />
+            </div>
+            <div class="form-group row">
+                <label for="district"></label>
+                <select id="district">
+                    <option>Select District</option>
+                </select>
+                <input type="button" id="show" value="Show" />
+            </div>
+        </div>
+        <div class="form-group">
+            @{
+    var myChart = new Chart(width: 600, height: 400)
+        .AddTitle("Chart Title")
+        .AddSeries(
+            name: "Employee",
+            xValue:new[]{}
+            yValues: new[] { "2", "6", "4", "5", "3" })
+        .Write();
+            }
+
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("AllDistrict", "DiseaseBarChart")',
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $('#district').append($('<option/>', {
+                            value: value.DiseasesId,
+                            text: value.Name
+                        }));
+                    });
+                },
+            });
+            $("#show").click(function () {
+                var districtId = $("#district").val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DiseaseInfo", "DiseaseBarChart")',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ districtId: districtId }),
+                    dataType: "json",
+                    success: function (data) {
+
+                    }
+                });
+            });
+        });
+    </script>
+}
